@@ -22,34 +22,34 @@ perch_weight=np.array([5.9,32.0,40.0,51.5,70.0,100.0,78.0,80.0,85.0,85.0,110.0,
 # 데이터 분리
 train_x, test_x, train_y, test_y = train_test_split(perch_length, perch_weight, random_state=42)
 
-
+# 차원 변경
 train_x = train_x.reshape(-1,1)
 test_x = test_x.reshape(-1,1)
+# print(train_x[:5] )
+# print(train_x[:5]**2 )
 
-lnr = LinearRegression()
-lnr.fit(train_x, train_y)
-print(lnr.score(test_x, test_y))
-pred = lnr.predict(test_x)
-pred_30 = lnr.predict([[30]])
-pred_70 = lnr.predict([[70]])
-pred_20 = lnr.predict([[2]])
-print(pred)
-print(pred_30)
-print(pred_70)
-print(pred_20)
 
-print(lnr.coef_*30 + lnr.intercept_)
+train_poly = np.column_stack( (train_x**2, train_x) )
+print(train_poly[:5])
+print(train_poly.shape)
+test_poly = np.column_stack( (test_x**2, test_x) )
+print(test_poly.shape)
 
+multi_lrmodel = LinearRegression()
+multi_lrmodel.fit(train_poly, train_y)
+print('acc: ', multi_lrmodel.score(test_poly, test_y))
+# 가중치, 편향 출력
+print(multi_lrmodel.coef_, multi_lrmodel.intercept_)
+
+# 예측
+# 길이가 30인 농어의 무게를 예측
+pred30 = multi_lrmodel.predict([[900, 30]])
+print('pred: ', pred30)
+print( multi_lrmodel.coef_[0]*900 + multi_lrmodel.coef_[1]*30 + multi_lrmodel.intercept_ )
 
 plt.scatter(train_x, train_y)
-plt.scatter(30, pred_30, marker='*', s=300, c='green')
-plt.scatter(70, pred_70, marker='^', s=300, c='orange')
-plt.scatter(2, pred_20, marker='^', s=300, c='orange')
-plt.plot([15, 70],[lnr.coef_*15 + lnr.intercept_, lnr.coef_*70 + lnr.intercept_])
-plt.savefig("선형농어")
-print(lnr.coef_, lnr.intercept_) # coef = 기울기, intercept = 절편
 
+xpoint = np.arange(15, 50) # [15...49]
+plt.plot(xpoint, 1.01*xpoint**2 - 21.*xpoint + 116.05)
 
-x_line = np.array([perch_length.min(), perch_length.max()]).reshape(-1, 1)
-y_line = lnr.predict(x_line)
-print(f'{x_line}, ddd{y_line}')
+plt.savefig('농어곡선')
