@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 # 몸무게 x 와 키 y 데이터 셋 준비
 
-x_data = np.array([0.65, 0.70 , 0.75, 0.80, 0.68, 0.55])  # 연산을 위해 몸무게 스케일 조정
-y_data = np.array([160, 175, 170, 180, 170, 156])
+x_data = np.array([0.65, 0.70 , 0.75, 0.80, 0.68, 0.55, 0.9, 0.7])  # 연산을 위해 몸무게 스케일 조정
+y_data = np.array([160, 175, 170, 180, 170, 156, 167, 200])
 
 # 기울기(가중치) w 와  절편(편향) 값 초기화
 w = 0
@@ -39,3 +39,4 @@ plt.plot(x_data*100,y_pred) # 직선 그래프
 plt.xlabel('weight')
 plt.ylabel('height')
 plt.show()
+plt.savefig('경사하강')
