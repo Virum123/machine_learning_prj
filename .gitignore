@@ -1,0 +1,17 @@
+.env
+.venv/
+venv/
+env/
+bin/
+include/
+lib/
+lib64
+share/
+pyvenv.cfg
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+.vscode/
+*.crdownload
