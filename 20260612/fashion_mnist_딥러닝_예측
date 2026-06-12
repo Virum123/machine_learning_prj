@@ -1,0 +1,35 @@
+import numpy as np
+from tensorflow.keras.datasets import fashion_mnist
+
+(train_x, train_y) , (test_x, test_y) = fashion_mnist.load_data()
+print(len(train_x), len(test_x)) # 60000, 10000
+print(test_y[:5])
+
+test_scaled = test_x.reshape(-1, 28, 28, 1) / 255.0 # 이미지 데이터 정규화
+print(test_scaled.shape)
+
+import matplotlib.pyplot as plt
+
+print(test_x[0].shape) # (28,28)
+
+
+plt.imshow(test_x[6], cmap='viridis')
+plt.savefig("슬라임의 앵클장화")
+
+# plt.imshow(test_x[1], cmap='viridis')
+# plt.savefig("슬라임의 스웨터")
+
+# plt.imshow(test_x[2], cmap='viridis')
+# plt.savefig("슬라임의 길쭉한 바지")
+
+from tensorflow.keras.models import load_model
+import joblib
+
+
+fsmodel = load_model('/home/kk30100/deeplearning_prj/20260612/mlis_best.keras')
+
+
+classes = ['티', '바지', '스웨터', '드레스','코트', '샌달', '셔츠', '스티커즈', '가방', '앵클부트']
+
+pred = fsmodel.predict(test_scaled[:5])
+print(np.argmax(pred, axis=1))

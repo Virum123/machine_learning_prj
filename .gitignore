@@ -15,3 +15,7 @@ __pycache__/
 
 .vscode/
 *.crdownload
+
+# Accidental package-install output files
+0.13.2
+=4.10.0
