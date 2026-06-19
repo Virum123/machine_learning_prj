@@ -19,3 +19,14 @@ __pycache__/
 # Accidental package-install output files
 0.13.2
 =4.10.0
+
+# Generated datasets and trained model artifacts
+*.keras
+*.h5
+*:Zone.Identifier
+20260615/cnn_cats_and_dogs_dataset/
+20260616/testimage_dataset/
+20260617/Covid19_CT_Image_dataset/
+20260619/seg_pred/
+20260619/seg_test/
+20260619/seg_train/

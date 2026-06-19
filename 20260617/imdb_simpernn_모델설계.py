@@ -1,0 +1,78 @@
+
+from tensorflow.keras.datasets import imdb
+import numpy as np
+(train_x, train_y ),( test_x , test_y ) = imdb.load_data(num_words = 500)
+print(len(train_x))
+print(len(test_x))
+print(train_x[0])
+
+print(np.unique(train_y, return_counts=True))
+from sklearn.model_selection import train_test_split
+
+train_x, val_x, train_y, val_y = \
+    train_test_split(train_x, train_y, test_size=0.2, random_state=43)
+
+print(len(train_x)) # 2만
+print(len(val_x)) # 5천 
+ 
+print(len(train_x[0])) # 백 삼십 팔
+print(len(train_x[1])) # 백 오십 사
+
+# 1차 ==> 길이가 다른 리뷰 정수데이터 배열을 길이가 동일한 정수 배열로 변경
+
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+# 길이를 100으로 맞추면 짧은건 0으로 채우고 긴건 버림
+train_seq = pad_sequences(train_x, maxlen = 100)
+print(train_seq[0])
+print(train_seq.shape)
+print(train_seq[400])
+
+
+val_seq = pad_sequences(val_x, maxlen = 100)
+print(val_seq[0])
+print(val_seq.shape)
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, SimpleRNN,Dense
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+
+model = Sequential()
+input = tf.keras.Input(shape=(100,)) # keras 3점대로 올라가면서 필요해진듯
+model.add(input)
+model.add( Embedding(input_dim=500,output_dim=16, input_length=100))
+model.add( SimpleRNN(32))
+model.add(Dense(1, activation='sigmoid'))
+model.summary()
+# RMSprop 보단 optimizer를 사용해야한다. 왜?
+
+optimizer = tf.keras.optimizers.Adam(learning_rate=1e-4) 
+model.compile(loss='binary_crossentropy',  optimizer = optimizer,
+                 metrics = ['accuracy'])
+# 모델 저장
+checkpoint_cb = ModelCheckpoint('best-simlernn-model.keras') # h5 대신 keras 사용
+# 조기종료
+early_stopping_cb = EarlyStopping(patience=10, restore_best_weights = True)
+
+history = model.fit(train_seq, train_y, epochs=50, batch_size=64,
+                    validation_data=(val_seq,val_y),
+                    callbacks=[checkpoint_cb, early_stopping_cb])
+
+
+# train_x ==> 정수벡터화 되어있음
+
+# word_index = imdb.get_word_index() # 어떤 단어를 어떤 수치로 변환했는지에 대한 정보를 반환함
+# # print(word_index)
+
+# for word, index in word_index.items():
+#     if index == 1: # imdb 데이터셋 중 가장 빈도수가 높은 단어
+#         print(word, index) # the 1
+
+# conv_word_index = dict( [idx+3, word for (word, idx) in word_index.items()])
+
+# for word, idx in conv_word_index.items():
+#     if idx == 4:
+#         print(word)
+
+# decoded_sentence = ' '.join( [ conv_word_index[i] if i in conv_word_index else '?' for i in
+# train_x[0] ])
+# print(decoded_sentence)
